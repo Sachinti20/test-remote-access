@@ -1,0 +1,38 @@
+from flask import Flask, render_template, request, jsonify
+
+app = Flask(__name__)
+
+# Dummy data representing media files
+media_files = {
+    "photos": ["photo1.jpg", "photo2.jpg", "photo3.jpg"],
+    "videos": ["video1.mp4", "video2.mp4"],
+    "documents": ["document1.pdf", "document2.docx"]
+}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/get_media', methods=['POST'])
+def get_media():
+    # Simulate authentication (replace with proper authentication mechanism)
+    auth_key = request.form.get('auth_key')
+    if auth_key != 'secret_key':
+        return jsonify({'error': 'Authentication failed'})
+
+    # Simulate permission check (replace with proper permission management)
+    permission_granted = request.form.get('permission') == 'true'
+    if not permission_granted:
+        return jsonify({'error': 'Permission denied'})
+
+    # Retrieve requested media type
+    media_type = request.form.get('media_type')
+
+    # Return media files for the requested type
+    if media_type in media_files:
+        return jsonify({'media_files': media_files[media_type]})
+    else:
+        return jsonify({'error': 'Invalid media type'})
+
+if __name__ == '__main__':
+    app.run(debug=True)
